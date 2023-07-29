@@ -1,4 +1,6 @@
 using CoreApi.DatabaseModels;
+using CoreApi.InterfaceImplements;
+using CoreApi.InterfacesWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -31,8 +33,8 @@ namespace CoreApi
                 });
             });
 
-
-          //================================================================================================// 
+            builder.Services.AddScoped<IGenderMaster, GenderInterfaceImplements>();
+            //================================================================================================// 
 
             var app = builder.Build();
 
