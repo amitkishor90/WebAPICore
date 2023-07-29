@@ -1,4 +1,7 @@
+using CoreApi.DatabaseModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CoreApi
 {
@@ -12,6 +15,11 @@ namespace CoreApi
 
             builder.Services.AddControllers();
 
+            #region add  DBConnection 
+            var connection = "Server=localhost;Database=CurdAPI;Trusted_Connection=True;TrustServerCertificate=True;";
+            builder.Services.AddDbContext<CurdApiContext>(options => options.UseSqlServer(connection)); // sql connection  add
+            #endregion
+
             // Add Swagger
             builder.Services.AddSwaggerGen(c =>
             {
@@ -24,6 +32,8 @@ namespace CoreApi
             });
 
 
+          //================================================================================================// 
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -33,15 +43,9 @@ namespace CoreApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API Name v1");
             });
-
-
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }
