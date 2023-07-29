@@ -20,7 +20,6 @@ namespace CoreApi.Controllers
         #region  Get all GenderList 
      
         [HttpGet]
-
         public async Task<ActionResult> GetEmployees()
         {
             try
@@ -31,7 +30,7 @@ namespace CoreApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error retrieving data from the database...");
-            }
+            } 
         }
         #endregion
     }
