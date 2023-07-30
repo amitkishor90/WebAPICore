@@ -36,6 +36,7 @@ namespace CoreApi
             });
 
             builder.Services.AddScoped<IGenderMaster, GenderInterfaceImplements>();
+            builder.Services.AddScoped<IDepartmentMaster, DepartmentInterfaceImplements>();
             //================================================================================================// 
 
             var app = builder.Build();

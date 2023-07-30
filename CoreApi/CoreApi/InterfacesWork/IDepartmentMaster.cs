@@ -1,13 +1,14 @@
-﻿using CoreApi.Models;
+﻿using CoreApi.ApiResponse;
+using CoreApi.Models;
 
 namespace CoreApi.InterfacesWork
 {
     public interface IDepartmentMaster
     {
-        Task<IEnumerable<DepartmentModel>> GetDepartmentsAsync();
-        Task<DepartmentModel> GetDepartmentByGuidAsync(string departmentGuid);
-        Task<DepartmentModel> AddDepartmentAsync(DepartmentModel department);
-        Task<DepartmentModel> UpdateDepartmentAsync(DepartmentModel department);
-        Task<bool> DeleteDepartmentAsync(string departmentGuid);
+        Task<ApiResponse<DepartmentModel>> AddDepartmentAsync(DepartmentModel department);
+        Task<ApiResponse<DepartmentModel>> GetDepartmentAsync(string departmentGuid);
+        Task<ApiResponse<IEnumerable<DepartmentModel>>> GetDepartmentsAsync();
+        Task<ApiResponse<DepartmentModel>> UpdateDepartmentAsync(DepartmentModel department);
+        Task<ApiResponse<bool>> DeleteDepartmentAsync(string departmentGuid);
     }
 }

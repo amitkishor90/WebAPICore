@@ -5,6 +5,7 @@
         public string? DepartmentGuid { get; set; }
         public string? DepartmentName { get; set; }
 
+
          
     }
 
