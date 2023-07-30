@@ -130,19 +130,147 @@ namespace CoreApi.InterfaceImplements
         }
 
 
-        public Task<ApiResponse<IEnumerable<DepartmentModel>>> GetDepartmentsAsync()
+        public async Task<ApiResponse<IEnumerable<DepartmentModel>>> GetDepartmentsAsync()
         {
-            throw new NotImplementedException();
+            var response = new ApiResponse<IEnumerable<DepartmentModel>>();
+
+            try
+            {
+                var departments = await appDbContext.Departments
+                    .OrderBy(d => d.Name) // Assuming you want to order by the department name. Replace "Name" with the desired property.
+                    .ToListAsync();
+                if (departments == null || departments.Count == 0)
+                {
+                    response.Message = "No departments found.";
+                    response.Status = "success"; // Since there is no error, the status can be "success" or "info" depending on the use case
+                    return response;
+                }
+                var departmentModels = departments.Select(department => new DepartmentModel
+                {
+                    DepartmentGuid = department.DepartmentGuid.ToString(),
+                    DepartmentName = department.Name
+                });
+                response.Data = departmentModels;
+                response.Message = "Departments fetched successfully.";
+                response.Status = "success";
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Error while fetching departments.";
+                response.Status = "error";
+                response.ExceptionMessage = ex.Message;
+            }
+            return response;
         }
 
-        public Task<ApiResponse<DepartmentModel>> UpdateDepartmentAsync(DepartmentModel department)
+
+
+
+        public async Task<ApiResponse<DepartmentModel>> UpdateDepartmentAsync(DepartmentModel department)
         {
-            throw new NotImplementedException();
+            var response = new ApiResponse<DepartmentModel>();
+
+            try
+            {
+                // Find the department entity by its Guid in the database
+                var existingDepartment = await appDbContext.Departments
+                    .FirstOrDefaultAsync(d => d.DepartmentGuid == new Guid(department.DepartmentGuid));
+
+                // If the department with the given Guid doesn't exist, return an error response
+                if (existingDepartment == null)
+                {
+                    response.Message = "Department not found.";
+                    response.Status = "error";
+                    return response;
+                }
+
+                // Check if the department name already exists in the database
+                var departmentNameExists = await DepartmentNameExistsAsync(department.DepartmentName, department.DepartmentGuid);
+                if (departmentNameExists==true)
+                {
+                    response.Message = "Department name already exists.";
+                    response.Status = "error";
+                    return response;
+                }
+
+                // Update the properties of the existing department entity
+                existingDepartment.Name = department.DepartmentName;
+
+                // Save the changes to the database
+                await appDbContext.SaveChangesAsync();
+
+                // Set the success response with the updated department model
+                response.Data = department;
+                response.Message = "Department updated successfully.";
+                response.Status = "success";
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the database operation
+                // For example, log the error and set the error response
+                response.Message = "Error while updating the department.";
+                response.Status = "error";
+                // You can also add an additional property to store the actual exception message if needed.
+                response.ExceptionMessage = ex.Message;
+            }
+
+            return response;
         }
 
-        public Task<ApiResponse<bool>> DeleteDepartmentAsync(string departmentGuid)
+        // Other methods... for check 
+
+        private async Task<bool> DepartmentNameExistsAsync(string departmentName, string departmentGuid)
         {
-            throw new NotImplementedException();
+            // Check if a department with the given name exists in the database
+           
+            return await appDbContext.Departments.AnyAsync(d => d.Name.ToLower() == departmentName.ToLower() && d.DepartmentGuid.ToString() == departmentGuid);
+        }
+
+        public async Task<ApiResponse<bool>> DeleteDepartmentAsync(string departmentGuid)
+        {
+            var response = new ApiResponse<bool>();
+
+            try
+            {
+                // Parse the departmentGuid to a Guid type
+                if (!Guid.TryParse(departmentGuid, out Guid guid))
+                {
+                    response.Message = "Invalid departmentGuid format.";
+                    response.Status = "error";
+                    return response;
+                }
+
+                // Find the department entity by its Guid in the database
+                var department = await appDbContext.Departments.FirstOrDefaultAsync(d => d.DepartmentGuid == guid);
+
+                // If the department with the given Guid doesn't exist, return an error response
+                if (department == null)
+                {
+                    response.Message = "Department not found.";
+                    response.Status = "error";
+                    return response;
+                }
+
+                // Remove the department from the database
+                appDbContext.Departments.Remove(department);
+                await appDbContext.SaveChangesAsync();
+
+                // Set the success response with a true value to indicate successful deletion
+                response.Data = true;
+                response.Message = "Department deleted successfully.";
+                response.Status = "success";
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the database operation
+                // For example, log the error and set the error response
+                response.Message = "Error while deleting the department.";
+                response.Status = "error";
+                // You can also add an additional property to store the actual exception message if needed.
+                response.ExceptionMessage = ex.Message;
+            }
+
+            return response;
         }
     }
 }
