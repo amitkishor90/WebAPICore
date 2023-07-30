@@ -84,5 +84,38 @@ namespace CoreApi.Controllers
         }
         #endregion
 
+        #region for gender update 
+
+        [HttpPut("{genderGuid}")]
+        public async Task<IActionResult> UpdateGender(string genderGuid, [FromBody] GenderModel updatedGender)
+        {
+            try
+            {
+                // Validate the input data
+                if (string.IsNullOrEmpty(genderGuid) || updatedGender == null)
+                {
+                    return BadRequest("Invalid input data.");
+                }
+
+                // Set the GenderGuid from the URL parameter into the updatedGender model
+                updatedGender.GenderGuid = genderGuid;
+
+                // Call the UpdateGender method from the GenderService
+                await _IGenderMaster.UpdateGender(updatedGender);
+
+                return Ok("Gender updated successfully.");
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while updating the gender.");
+                return StatusCode(500, "An error occurred while updating the gender.");
+            }
+        }
+        #endregion
+
     }
 }

@@ -87,9 +87,31 @@ namespace CoreApi.InterfaceImplements
             }
         }
 
-        public Task UpdateGender(string GenderGuid)
+        public async Task UpdateGender(GenderModel _GenderModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Find the gender in the database based on the provided GenderGuid
+                var gender = await appDbContext.Genders.FirstOrDefaultAsync(x => x.GenderGuid.ToString() == _GenderModel.GenderGuid.ToLower());
+
+                // If gender is null, it means no match was found
+                if (gender == null)
+                {
+                    throw new ArgumentException("Gender not found.");
+                }
+
+                // Update the properties of the gender entity with the properties from the updatedGender model
+                gender.Name = _GenderModel.Name;
+
+                // Save the changes to the database
+                await appDbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the gender.");
+                // Rethrow the exception to propagate it further if needed
+                throw;
+            }
         }
     }
 }

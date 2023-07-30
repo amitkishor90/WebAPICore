@@ -31,6 +31,8 @@ namespace CoreApi
                     Version = "v1",
                     Description = "Your API Description"
                 });
+                
+
             });
 
             builder.Services.AddScoped<IGenderMaster, GenderInterfaceImplements>();

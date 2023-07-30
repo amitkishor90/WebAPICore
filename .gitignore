@@ -1,0 +1,6 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/CoreApi/CoreApi/bin/Debug/net7.0/CoreApi.dll
+/CoreApi/CoreApi/bin/Debug/net7.0/CoreApi.pdb
