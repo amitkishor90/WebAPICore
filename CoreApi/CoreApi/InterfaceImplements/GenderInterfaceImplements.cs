@@ -46,9 +46,24 @@ namespace CoreApi.InterfaceImplements
             
         }
 
-        public Task<GenderModel> GetGenderByGuid(int GenderGuid)
+        public async Task<GenderModel> GetGenderByGuid(string GenderGuid)
         {
-            throw new NotImplementedException();
+            // Use the equality comparison operator (==) to filter based on GenderGuid
+            var gender = await appDbContext.Genders.FirstOrDefaultAsync(x => x.GenderGuid.ToString() == GenderGuid.ToLower());
+
+            // If gender is null, it means no match was found
+            if (gender == null)
+            {
+                // You can return null, throw an exception, or handle it as needed
+                return null;
+            }
+
+            // Assuming you have a GenderModel constructor that accepts Gender entity as a parameter
+            return new GenderModel
+            {
+                GenderGuid = gender.GenderGuid.ToString(),
+                Name = gender.Name
+            };
         }
 
         public async Task<IEnumerable<GenderModellist>> GetGenderList()

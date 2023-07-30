@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace CoreApi.Controllers
 {
@@ -39,7 +40,7 @@ namespace CoreApi.Controllers
         #endregion
 
 
-        #region
+        #region  Add for gender in table 
         [HttpPost]
         public async Task<IActionResult> AddGender([FromBody] GenderModel genderModel)
         {
@@ -59,5 +60,29 @@ namespace CoreApi.Controllers
             }
         }
         #endregion
+
+        #region  for get gender by guid 
+        [HttpGet("{genderGuid}")]
+        public async Task<IActionResult> GetGenderByGuid(string genderGuid)
+        {
+            try
+            {
+                var gender = await _IGenderMaster.GetGenderByGuid(genderGuid);
+
+                if (gender == null)
+                {
+                    return NotFound("Gender not found.");
+                }
+
+                return Ok(gender);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while fetching gender by Guid.");
+                return StatusCode(500, "An error occurred while fetching gender by Guid.");
+            }
+        }
+        #endregion
+
     }
 }
