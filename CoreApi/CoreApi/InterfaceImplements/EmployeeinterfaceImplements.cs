@@ -1,4 +1,5 @@
-﻿using CoreApi.ApiResponse;
+﻿using Azure;
+using CoreApi.ApiResponse;
 using CoreApi.DatabaseModels;
 using CoreApi.InterfacesWork;
 using CoreApi.Models;
@@ -106,10 +107,58 @@ namespace CoreApi.InterfaceImplements
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<IEnumerable<EmployeesModels>>> GetEmployeesAsync()
+        public async Task<ApiResponse<IEnumerable<EmployeesModelsList>>> GetEmployeesAsync()
         {
-            throw new NotImplementedException();
+            var response = new ApiResponse<IEnumerable<EmployeesModelsList>>();
+            try
+            {
+                // Simulate an asynchronous operation (e.g., querying a database) using Task.Delay
+                // Replace this with actual asynchronous database access in a real application
+                await Task.Delay(100);
+
+                // Perform the join between Employees, Genders, and Departments
+                var employeesList = (from employee in appDbContext.Employees
+                                     join gender in appDbContext.Genders on employee.GenderId equals gender.Id
+                                     join department in appDbContext.Departments on employee.DepartmentId equals department.Id
+                                     select new EmployeesModelsList
+                                     {
+                                         EmployeeGuid = employee.Guid.ToString(),
+                                         GenderGuid = gender.GenderGuid.ToString(),
+                                         DepartmentGuid = department.DepartmentGuid.ToString(),
+                                         FirstName = employee.FirstName,
+                                         LastName = employee.LastName,
+                                         Emailid = employee.Emailid,
+                                         PenCardNo = employee.PenCardNo,
+                                         salary = (double)Convert.ToDecimal(employee.Salary),
+                                         GenderName = gender.Name,
+                                         DepartmentName = department.Name,
+                                         Address = employee.Address,
+                                        
+                                     }).ToList();
+
+                response.Data = employeesList; // Assign the employeesList directly to the Data property of the ApiResponse
+                response.Message = "Employees found.";
+                response.IsError = false;
+                response.Status = "Success";
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting employees.");
+
+                // Populate the response properties to indicate the error
+                response.Data = null;
+                response.Message = "Error while getting employees.";
+                response.IsError = true;
+                response.Status = "Error";
+
+                // You can also add an additional property to store the actual exception message if needed.
+                response.ExceptionMessage = ex.Message;
+            }
+
+            return response;
         }
+
 
         public Task<ApiResponse<bool>> UpdateEmployeeAsync(EmployeesModels employee)
         {

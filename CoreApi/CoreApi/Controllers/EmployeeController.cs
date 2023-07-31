@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CoreApi.Controllers
 {
-    [Route("api/[controller]")]
+   
     [ApiController]
     public class EmployeeController : ControllerBase
     {
@@ -21,6 +21,8 @@ namespace CoreApi.Controllers
 
 
         [HttpPost]
+        [Route("api/AddEmployee")]
+       
         public async Task<IActionResult> AddEmployee([FromBody] EmployeesModels employeeModel)
         {
             try
@@ -55,6 +57,23 @@ namespace CoreApi.Controllers
                     IsError = true,
                     Message = "An error occurred while adding an employee."
                 });
+            }
+        }
+        [HttpGet]
+        [Route("api/GetEmployee")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<EmployeesModelsList>>>> GetEmployees()
+        {
+            // Call the GetEmployeesAsync method from the employeesRepository
+            var response = await _IEmployeesMaster.GetEmployeesAsync();
+
+            // Check if the ApiResponse indicates success or error
+            if (!response.IsError)
+            {
+                return Ok(response); // Return 200 with the ApiResponse containing employees list
+            }
+            else
+            {
+                return BadRequest(response); // Return 400 with the ApiResponse containing error details
             }
         }
     }

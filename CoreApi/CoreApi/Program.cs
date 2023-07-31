@@ -23,7 +23,6 @@ namespace CoreApi
 
             var provider = builder.Services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
-            var sd = config.GetConnectionString("DBCS");
             builder.Services.AddDbContext<CurdApiContext>(item => item.UseSqlServer(config.GetConnectionString("DBCS")));
             #endregion
 
