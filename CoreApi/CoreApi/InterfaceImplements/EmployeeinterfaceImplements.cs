@@ -16,17 +16,12 @@ namespace CoreApi.InterfaceImplements
         private CurdApiContext appDbContext;
         private Guid? genderGuid;
         private readonly ILogger<EmployeeinterfaceImplements> _logger;
-       
-
-        
         public EmployeeinterfaceImplements(CurdApiContext appDbContext, ILogger<EmployeeinterfaceImplements> logger)
         {
             this.appDbContext = appDbContext;
             _logger = logger;
-            
-
         }
-
+        #region Add Employee 
         public async Task<ApiResponse<EmployeesModels>> AddEmployeeAsync(EmployeesModels employee)
         {
             var response = new ApiResponse<EmployeesModels>();
@@ -96,7 +91,9 @@ namespace CoreApi.InterfaceImplements
 
             return response;
         }
+        #endregion
 
+        #region Delete employee by Guid 
         public async Task<ApiResponse<bool>> DeleteEmployeeAsync(string employeeGuid)
         {
             var response = new ApiResponse<bool>();
@@ -139,6 +136,8 @@ namespace CoreApi.InterfaceImplements
 
             return response;
         }
+
+        #endregion
 
         #region Get Employee with guid
         public async Task<ApiResponse<List<EmployeesModels>>> GetEmployeeAsync(string employeeGuid)
@@ -188,8 +187,7 @@ namespace CoreApi.InterfaceImplements
         }
         #endregion
 
-
-
+        #region  get all Employee Data 
         public async Task<ApiResponse<IEnumerable<EmployeesModelsList>>> GetEmployeesAsync()
         {
             var response = new ApiResponse<IEnumerable<EmployeesModelsList>>();
@@ -242,7 +240,9 @@ namespace CoreApi.InterfaceImplements
             return response;
         }
 
+        #endregion
 
+        #region Update Employee Data 
         public async Task<ApiResponse<bool>> UpdateEmployeeAsync(EmployeesModels employee)
         {
             var response = new ApiResponse<bool>();
@@ -298,7 +298,10 @@ namespace CoreApi.InterfaceImplements
 
             return response;
         }
+        #endregion
 
+
+        #region this method is get Gender Guid and department Guid
         public int GetGenderID(string _GenderGuid)
         {
             Guid guid = Guid.Parse(_GenderGuid);
@@ -314,6 +317,8 @@ namespace CoreApi.InterfaceImplements
             return Departmentid.Id;
 
         }
+
+        #endregion
     }
 }
 

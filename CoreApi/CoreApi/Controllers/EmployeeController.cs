@@ -20,10 +20,9 @@ namespace CoreApi.Controllers
             this.logger = logger;
         }
 
-
+        #region  Add Employee Api
         [HttpPost]
         [Route("api/AddEmployee")]
-       
         public async Task<IActionResult> AddEmployee([FromBody] EmployeesModels employeeModel)
         {
             try
@@ -60,6 +59,9 @@ namespace CoreApi.Controllers
                 });
             }
         }
+        #endregion
+
+        #region Get All Employee
         [HttpGet]
         [Route("api/GetEmployee")]
         public async Task<ActionResult<ApiResponse<IEnumerable<EmployeesModelsList>>>> GetEmployees()
@@ -77,7 +79,9 @@ namespace CoreApi.Controllers
                 return BadRequest(response); // Return 400 with the ApiResponse containing error details
             }
         }
+        #endregion
 
+        #region Get Employee data by Guid 
         [HttpGet("{employeeGuid}")]
         public async Task<ActionResult<ApiResponse<EmployeesModels>>> GetEmployee(string employeeGuid)
         {
@@ -94,7 +98,9 @@ namespace CoreApi.Controllers
                 return BadRequest(response); // Return 400 with the ApiResponse containing error details
             }
         }
+        #endregion
 
+        #region  Delete  Employee by Guid
         [HttpDelete("{employeeGuid}")]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteEmployee(string employeeGuid)
         {
@@ -106,7 +112,9 @@ namespace CoreApi.Controllers
 
             return Ok(response);
         }
+        #endregion
 
+        #region Employee Update 
         [HttpPut("api/EmployeeUpate")]
         public async Task<ActionResult<ApiResponse<bool>>> UpdateEmployee(EmployeesModels employee)
         {
@@ -118,8 +126,6 @@ namespace CoreApi.Controllers
 
             return Ok(response);
         }
-
-
-
+        #endregion
     }
 }

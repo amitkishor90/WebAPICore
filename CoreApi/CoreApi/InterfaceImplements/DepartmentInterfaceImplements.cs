@@ -18,6 +18,7 @@ namespace CoreApi.InterfaceImplements
             _logger = logger;
         }
 
+        #region check Department name Exists
         private async Task<bool> DepartmentNameExistsAsync(string departmentName)
         {
             // Convert the department name to lowercase for case-insensitive comparison (optional)
@@ -26,8 +27,10 @@ namespace CoreApi.InterfaceImplements
             // Check if any department in the database has the same name
             return await appDbContext.Departments.AnyAsync(d => d.Name.ToLower() == departmentName);
         }
+        #endregion
 
 
+        #region Add Department Name 
         public async Task<ApiResponse<DepartmentModel>> AddDepartmentAsync(DepartmentModel department)
         {
             var response = new ApiResponse<DepartmentModel>();
@@ -74,8 +77,9 @@ namespace CoreApi.InterfaceImplements
 
             return response;
         }
+        #endregion
 
-
+        #region Add Get Department one for edit  
         public async Task<ApiResponse<DepartmentModel>> GetDepartmentAsync(string departmentGuid)
         {
             var response = new ApiResponse<DepartmentModel>();
@@ -128,12 +132,13 @@ namespace CoreApi.InterfaceImplements
 
             return response;
         }
+        #endregion
 
 
+        #region Add Get Department all data
         public async Task<ApiResponse<IEnumerable<DepartmentModel>>> GetDepartmentsAsync()
         {
             var response = new ApiResponse<IEnumerable<DepartmentModel>>();
-
             try
             {
                 var departments = await appDbContext.Departments
@@ -162,10 +167,9 @@ namespace CoreApi.InterfaceImplements
             }
             return response;
         }
+        #endregion
 
-
-
-
+        #region   Update Department  
         public async Task<ApiResponse<DepartmentModel>> UpdateDepartmentAsync(DepartmentModel department)
         {
             var response = new ApiResponse<DepartmentModel>();
@@ -216,7 +220,7 @@ namespace CoreApi.InterfaceImplements
 
             return response;
         }
-
+        #endregion
         // Other methods... for check 
 
         private async Task<bool> DepartmentNameExistsAsync(string departmentName, string departmentGuid)
@@ -226,6 +230,7 @@ namespace CoreApi.InterfaceImplements
             return await appDbContext.Departments.AnyAsync(d => d.Name.ToLower() == departmentName.ToLower() && d.DepartmentGuid.ToString() == departmentGuid);
         }
 
+        #region Delete department name 
         public async Task<ApiResponse<bool>> DeleteDepartmentAsync(string departmentGuid)
         {
             var response = new ApiResponse<bool>();
@@ -269,5 +274,6 @@ namespace CoreApi.InterfaceImplements
             }
             return response;
         }
+        #endregion
     }
 }
