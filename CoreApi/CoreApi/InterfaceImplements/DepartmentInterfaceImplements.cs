@@ -250,11 +250,9 @@ namespace CoreApi.InterfaceImplements
                     response.Status = "error";
                     return response;
                 }
-
                 // Remove the department from the database
                 appDbContext.Departments.Remove(department);
                 await appDbContext.SaveChangesAsync();
-
                 // Set the success response with a true value to indicate successful deletion
                 response.Data = true;
                 response.Message = "Department deleted successfully.";
@@ -269,7 +267,6 @@ namespace CoreApi.InterfaceImplements
                 // You can also add an additional property to store the actual exception message if needed.
                 response.ExceptionMessage = ex.Message;
             }
-
             return response;
         }
     }

@@ -18,8 +18,12 @@ namespace CoreApi
             builder.Services.AddControllers();
 
             #region add  DBConnection 
-            var connection = "Server=localhost;Database=CurdAPI;Trusted_Connection=True;TrustServerCertificate=True;";
-            builder.Services.AddDbContext<CurdApiContext>(options => options.UseSqlServer(connection)); // sql connection  add
+            //var connection = "Server=localhost;Database=CurdAPI;Trusted_Connection=True;TrustServerCertificate=True;";
+            //builder.Services.AddDbContext<CurdApiContext>(options => options.UseSqlServer(connection)); // sql connection  add
+
+            var provider = builder.Services.BuildServiceProvider();
+            var config = provider.GetRequiredService<IConfiguration>();
+            builder.Services.AddDbContext<CurdApiContext>(item => item.UseSqlServer(config.GetConnectionString("DBCS")));
             #endregion
 
             // Add Swagger
@@ -37,6 +41,7 @@ namespace CoreApi
 
             builder.Services.AddScoped<IGenderMaster, GenderInterfaceImplements>();
             builder.Services.AddScoped<IDepartmentMaster, DepartmentInterfaceImplements>();
+            builder.Services.AddScoped<IEmployeesMaster, EmployeeinterfaceImplements>();
             //================================================================================================// 
 
             var app = builder.Build();
