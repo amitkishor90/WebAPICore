@@ -107,6 +107,19 @@ namespace CoreApi.Controllers
             return Ok(response);
         }
 
+        [HttpPut("api/EmployeeUpate")]
+        public async Task<ActionResult<ApiResponse<bool>>> UpdateEmployee(EmployeesModels employee)
+        {
+            var response = await _IEmployeesMaster.UpdateEmployeeAsync(employee);
+            if (response.IsError)
+            {
+                return BadRequest(response); // Or return any other appropriate error response
+            }
+
+            return Ok(response);
+        }
+
+
 
     }
 }
