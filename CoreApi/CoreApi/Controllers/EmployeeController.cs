@@ -3,6 +3,7 @@ using CoreApi.InterfacesWork;
 using CoreApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CoreApi.Controllers
 {
@@ -76,5 +77,36 @@ namespace CoreApi.Controllers
                 return BadRequest(response); // Return 400 with the ApiResponse containing error details
             }
         }
+
+        [HttpGet("{employeeGuid}")]
+        public async Task<ActionResult<ApiResponse<EmployeesModels>>> GetEmployee(string employeeGuid)
+        {
+            // Call the GetEmployeeAsync method from the employeesRepository
+            var response = await _IEmployeesMaster.GetEmployeeAsync(employeeGuid);
+
+            // Check if the ApiResponse indicates success or error
+            if (!response.IsError)
+            {
+                return Ok(response); // Return 200 with the ApiResponse containing the employee data
+            }
+            else
+            {
+                return BadRequest(response); // Return 400 with the ApiResponse containing error details
+            }
+        }
+
+        [HttpDelete("{employeeGuid}")]
+        public async Task<ActionResult<ApiResponse<bool>>> DeleteEmployee(string employeeGuid)
+        {
+            var response = await _IEmployeesMaster.DeleteEmployeeAsync(employeeGuid);
+            if (response.IsError)
+            {
+                return BadRequest(response); // Or return any other appropriate error response
+            }
+
+            return Ok(response);
+        }
+
+
     }
 }

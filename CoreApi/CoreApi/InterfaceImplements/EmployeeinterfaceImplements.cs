@@ -97,15 +97,98 @@ namespace CoreApi.InterfaceImplements
             return response;
         }
 
-        public Task<ApiResponse<bool>> DeleteEmployeeAsync(string employeeGuid)
+        public async Task<ApiResponse<bool>> DeleteEmployeeAsync(string employeeGuid)
         {
-            throw new NotImplementedException();
+            var response = new ApiResponse<bool>();
+            try
+            {
+                if (Guid.TryParse(employeeGuid, out Guid guid))
+                {
+                    var employee = await appDbContext.Employees.FirstOrDefaultAsync(e => e.Guid == guid);
+                    if (employee != null)
+                    {
+                        appDbContext.Employees.Remove(employee);
+                        await appDbContext.SaveChangesAsync();
+
+                        response.Data = true;
+                        response.Message = "Employee deleted successfully.";
+                        response.IsError = false;
+                        response.Status = "Success";
+                    }
+                    else
+                    {
+                        response.Message = "Employee not found.";
+                        response.IsError = true;
+                        response.Status = "Error";
+                    }
+                }
+                else
+                {
+                    response.Message = "Invalid employee Guid.";
+                    response.IsError = true;
+                    response.Status = "Error";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Message = "An error occurred while deleting the employee.";
+                response.IsError = true;
+                response.Status = "Error";
+                response.ExceptionMessage = ex.Message;
+            }
+
+            return response;
         }
 
-        public Task<ApiResponse<EmployeesModels>> GetEmployeeAsync(string employeeGuid)
+        #region Get Employee with guid
+        public async Task<ApiResponse<List<EmployeesModels>>> GetEmployeeAsync(string employeeGuid)
         {
-            throw new NotImplementedException();
+            var response = new ApiResponse<List<EmployeesModels>>();
+            try
+            {
+                if (Guid.TryParse(employeeGuid, out Guid guid))
+                {
+                    var employeesList = await (from employee in appDbContext.Employees
+                                               join gender in appDbContext.Genders on employee.GenderId equals gender.Id
+                                               join department in appDbContext.Departments on employee.DepartmentId equals department.Id
+                                               select new EmployeesModels
+                                               {
+                                                   Guid = employee.Guid.ToString(),
+                                                   FirstName = employee.FirstName,
+                                                   LastName = employee.LastName,
+                                                   Emailid = employee.Emailid,
+                                                   PenCardNo = employee.PenCardNo,
+                                                   Salary = employee.Salary,
+                                                   GenderGuid = gender.GenderGuid.HasValue ? gender.GenderGuid.Value.ToString() : "B1424101-620C-47CA-92CD-F40A2B407D09",
+                                                   DepartmentGuid = department.DepartmentGuid.HasValue ? department.DepartmentGuid.Value.ToString() : "3265D33D-CEB6-4E9B-9828-051FD371CBA5",
+                                                   Address = employee.Address,
+                                               }).ToListAsync();
+
+                    response.Data = employeesList;
+                    response.Message = "Employees found.";
+                    response.IsError = false;
+                    response.Status = "Success";
+                }
+                else
+                {
+                    response.Message = "Invalid employee Guid.";
+                    response.IsError = true;
+                    response.Status = "Error";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Message = "An error occurred while getting employees.";
+                response.IsError = true;
+                response.Status = "Error";
+                response.ExceptionMessage = ex.Message;
+            }
+
+            return response;
         }
+        #endregion
+
+
 
         public async Task<ApiResponse<IEnumerable<EmployeesModelsList>>> GetEmployeesAsync()
         {
@@ -160,9 +243,60 @@ namespace CoreApi.InterfaceImplements
         }
 
 
-        public Task<ApiResponse<bool>> UpdateEmployeeAsync(EmployeesModels employee)
+        public async Task<ApiResponse<bool>> UpdateEmployeeAsync(EmployeesModels employee)
         {
-            throw new NotImplementedException();
+            var response = new ApiResponse<bool>();
+            int GenderID = GetGenderID(employee.GenderGuid);
+            int DepartmentID = GetDepartmentID(employee.DepartmentGuid);
+            try
+            {
+                if (Guid.TryParse(employee.Guid, out Guid guid))
+                {
+                    var existingEmployee = await appDbContext.Employees.FirstOrDefaultAsync(e => e.Guid == guid);
+                    if (existingEmployee != null)
+                    {
+                        
+                        // Update the employee properties
+                        existingEmployee.FirstName = employee.FirstName;
+                        existingEmployee.LastName = employee.LastName;
+                        existingEmployee.Emailid = employee.Emailid;
+                        existingEmployee.PenCardNo = employee.PenCardNo;
+                        existingEmployee.Salary = employee.Salary;
+                        existingEmployee.GenderId = GenderID;
+                        existingEmployee.DepartmentId = DepartmentID;
+                        existingEmployee.Address = employee.Address;
+
+                        appDbContext.Employees.Update(existingEmployee);
+                        await appDbContext.SaveChangesAsync();
+
+                        response.Data = true;
+                        response.Message = "Employee updated successfully.";
+                        response.IsError = false;
+                        response.Status = "Success";
+                    }
+                    else
+                    {
+                        response.Message = "Employee not found.";
+                        response.IsError = true;
+                        response.Status = "Error";
+                    }
+                }
+                else
+                {
+                    response.Message = "Invalid employee Guid.";
+                    response.IsError = true;
+                    response.Status = "Error";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Message = "An error occurred while updating the employee.";
+                response.IsError = true;
+                response.Status = "Error";
+                response.ExceptionMessage = ex.Message;
+            }
+
+            return response;
         }
 
         public int GetGenderID(string _GenderGuid)
