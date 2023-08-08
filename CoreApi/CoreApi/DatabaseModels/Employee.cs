@@ -34,4 +34,6 @@ public partial class Employee
     public virtual Department? Department { get; set; }
 
     public virtual Gender? Gender { get; set; }
+
+    public virtual UserMaster? UserMaster { get; set; }
 }

@@ -31,9 +31,9 @@ namespace CoreApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Your API Name",
+                    Title = ".Net core api",
                     Version = "v1",
-                    Description = "Your API Description"
+                    Description = "Api .NET Core Use Entity framework DataBase First  v1"
                 });
                 
 
@@ -42,6 +42,8 @@ namespace CoreApi
             builder.Services.AddScoped<IGenderMaster, GenderInterfaceImplements>();
             builder.Services.AddScoped<IDepartmentMaster, DepartmentInterfaceImplements>();
             builder.Services.AddScoped<IEmployeesMaster, EmployeeinterfaceImplements>();
+            builder.Services.AddScoped<IadminInterface, AdminInterfaceImplements>();
+
             //================================================================================================// 
 
             var app = builder.Build();

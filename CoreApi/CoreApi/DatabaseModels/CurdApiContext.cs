@@ -21,14 +21,12 @@ public partial class CurdApiContext : DbContext
 
     public virtual DbSet<Gender> Genders { get; set; }
 
+    public virtual DbSet<UserMaster> UserMasters { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if(!optionsBuilder.IsConfigured)
-        {
-             
-        }
-    }
 
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -103,6 +101,38 @@ public partial class CurdApiContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<UserMaster>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__UserMast__3213E83FA41B1CC7");
+
+            entity.ToTable("UserMaster");
+
+            entity.HasIndex(e => e.EmpId, "UQ__UserMast__1299A86082A15766").IsUnique();
+
+            entity.HasIndex(e => e.Username, "UQ__UserMast__F3DBC572DD4D1B12").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.EmpId).HasColumnName("emp_id");
+            entity.Property(e => e.LastLogin)
+                .HasColumnType("datetime")
+                .HasColumnName("last_login");
+            entity.Property(e => e.LastLogout)
+                .HasColumnType("datetime")
+                .HasColumnName("last_logout");
+            entity.Property(e => e.Password)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("password");
+            entity.Property(e => e.Username)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("username");
+
+            entity.HasOne(d => d.Emp).WithOne(p => p.UserMaster)
+                .HasForeignKey<UserMaster>(d => d.EmpId)
+                .HasConstraintName("FK_employee_usermaster");
         });
 
         OnModelCreatingPartial(modelBuilder);
