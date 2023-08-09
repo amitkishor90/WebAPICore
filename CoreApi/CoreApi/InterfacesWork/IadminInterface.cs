@@ -1,9 +1,10 @@
-﻿using CoreApi.Models;
+﻿using CoreApi.ApiResponse;
+using CoreApi.Models;
 
 namespace CoreApi.InterfacesWork
 {
     public interface IadminInterface
     {
-        Task<bool> AuthenticateUser(LoginModel loginModel);
+        Task<ApiResponse<loginresponse>> AuthenticateUser(LoginModel loginModel);
     }
 }

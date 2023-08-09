@@ -3,6 +3,7 @@ using CoreApi.InterfaceImplements;
 using CoreApi.InterfacesWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CoreApi
@@ -26,18 +27,56 @@ namespace CoreApi
             builder.Services.AddDbContext<CurdApiContext>(item => item.UseSqlServer(config.GetConnectionString("DBCS")));
             #endregion
 
-            // Add Swagger
-            builder.Services.AddSwaggerGen(c =>
+            #region Swagger
+            //var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+            //builder.Services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(x =>
+            //{
+            //    x.RequireHttpsMetadata = false;
+            //    x.SaveToken = false;
+            //    x.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(key),
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false,
+            //    };
+            //});
+
+            builder.Services.AddSwaggerGen(option =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
-                    Title = ".Net core api",
-                    Version = "v1",
-                    Description = "Api .NET Core Use Entity framework DataBase First  v1"
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
                 });
-                
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+                     {
+                         {
+                               new OpenApiSecurityScheme
+                                 {
+                                     Reference = new OpenApiReference
+                                     {
+                                         Type = ReferenceType.SecurityScheme,
+                                         Id = "Bearer"
+                                     }
+                                 },
+                                 new string[] {}
+                         }
+                     });
 
             });
+            #endregion
+            // Add Swagger
+
 
             builder.Services.AddScoped<IGenderMaster, GenderInterfaceImplements>();
             builder.Services.AddScoped<IDepartmentMaster, DepartmentInterfaceImplements>();
