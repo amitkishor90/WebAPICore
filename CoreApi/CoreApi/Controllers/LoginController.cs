@@ -8,7 +8,7 @@ namespace CoreApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-  // [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     public class LoginController : ControllerBase
     {
         private readonly ILogger _loginService;

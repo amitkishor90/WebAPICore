@@ -1,6 +1,7 @@
 ﻿using CoreApi.ApiResponse;
 using CoreApi.InterfacesWork;
 using CoreApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,12 @@ namespace CoreApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     public class DepartmentsController : ControllerBase
     {
         private readonly IDepartmentMaster _IDepartmentMaster;
         private readonly ILogger<GenderMasterController> logger;
+     
         public DepartmentsController(IDepartmentMaster IDepartmentMaster, ILogger<GenderMasterController> logger)
         {
             this._IDepartmentMaster = IDepartmentMaster;
@@ -19,6 +22,7 @@ namespace CoreApi.Controllers
         }
         #region
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddDepartment([FromBody] DepartmentModel departmentModel)
         {
             try
@@ -43,6 +47,7 @@ namespace CoreApi.Controllers
 
         #region get department from guid 
         [HttpGet("{departmentGuid}")]
+        [Authorize]
         public async Task<IActionResult> GetDepartment(string departmentGuid)
         {
 
@@ -67,6 +72,7 @@ namespace CoreApi.Controllers
 
         #region
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetDepartments()
         {
             try
@@ -94,6 +100,7 @@ namespace CoreApi.Controllers
 
         #region update Department 
         [HttpPut("{departmentGuid}")]
+        [Authorize]
         public async Task<IActionResult> UpdateDepartment(string departmentGuid, [FromBody] DepartmentModel department)
         {
             try
@@ -138,6 +145,7 @@ namespace CoreApi.Controllers
 
         #region delete Department 
         [HttpDelete("{departmentGuid}")]
+        [Authorize]
         public async Task<IActionResult> DeleteDepartment(string departmentGuid)
         {
             try
